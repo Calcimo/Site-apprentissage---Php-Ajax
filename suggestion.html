@@ -1,0 +1,48 @@
+<script type='text/javascript' src='js/ajaxrequest.js'></script>
+
+<script>
+    // Fonction appelée au chargement complet de la page
+    window.onload = function () {
+        // Désactivation de l'envoi du formulaire
+        document.forms['myForm'].onsubmit = function () { return false ; }
+
+        // Fonction appelée lors d'une modification de la saisie
+        document.forms['myForm'].elements['myText'].oninput = function() {
+            var value = document.querySelector("input").value
+            new AjaxRequest(
+            {
+                url        : "liste_artistes.php",
+                method     : 'GET',
+                parameters : {
+                    q : value,
+                    wait : ""
+                },
+                onSuccess  : function(res) {
+                    if (this.ReadyStat != 4){
+                        this.cancel()
+                    }
+                    document.querySelector("#mySpan").innerText = res;
+                    },
+                onError    : function(status, message) {
+                    window.alert('Error ' + status + ': ' + message);
+                    }
+            }) ;            
+        }
+    }
+</script>
+
+<!doctype html>
+<html lang="fr">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Suggestions de noms en AJAX</title>
+    </head>
+    <body>
+        <p>Saisir un artiste :</p>
+        <form name = "myForm">
+            <input type="text" name = "myText">
+            <p>Suggestion</p>
+            <span id="mySpan"></span>
+        </form>
+    </body>
+</html>
